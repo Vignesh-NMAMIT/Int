@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Guide: WhatsApp to Google Sheets Automation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chosen Palette: Calm Tech -->
+    <!-- Application Structure Plan: The SPA is designed with a tab-based navigation to break the guide into logical, non-linear sections: Overview, Setup, Implementation, and Demo Guide. This structure allows users to jump to the content they need, reducing cognitive load. The core of the app is an interactive flowchart in the "Implementation" section that visually represents the Make.com workflow. Clicking on each node reveals detailed instructions, transforming passive reading into active exploration. A final "Live Simulation" section provides a "wow" factor, demonstrating the end-to-end flow in a sandboxed UI, which solidifies understanding of the project's goal. This structure was chosen for its usability, interactivity, and alignment with modern learning principles over a simple linear document. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Project Goal & Tech Stack -> Goal: Inform -> Viz/Method: Text blocks with icons -> Interaction: None -> Justification: Clear, direct presentation of core concepts.
+        - Report Info: Tools & Setup Checklist -> Goal: Organize/Track -> Viz/Method: Interactive HTML checklist -> Interaction: User can click to toggle checkmarks -> Justification: Makes the setup process tangible and gives a sense of accomplishment.
+        - Report Info: Make.com Implementation Steps -> Goal: Explain a process -> Viz/Method: Interactive flowchart diagram (HTML/CSS divs) -> Interaction: Clicking a node reveals a modal with detailed instructions -> Justification: Visualizing the workflow is more intuitive than text-only steps and mirrors the actual Make.com UI.
+        - Report Info: Demo Video Structure -> Goal: Organize/Inform -> Viz/Method: Styled content cards -> Interaction: Hover effects -> Justification: Visually appealing and easy-to-scan presentation of steps.
+        - Report Info: Workflow End Result -> Goal: Demonstrate -> Viz/Method: A two-panel UI simulation of WhatsApp and Google Sheets -> Interaction: Clicking buttons in the simulation triggers JS to update the UI, showing the data logging in real-time -> Justification: Provides a powerful, immediate understanding of the project's final output.
+        - New Feature: AI Demo Script -> Goal: Assist/Generate -> Viz/Method: Button triggers API call -> Interaction: Click -> Justification: Directly helps user complete a key task using generative AI.
+        - New Feature: AI Project Extensions -> Goal: Inspire/Ideate -> Viz/Method: Button triggers API call -> Interaction: Click -> Justification: Encourages creative thinking and showcases advanced project potential.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9; /* slate-100 */
+            color: #1e293b; /* slate-800 */
+        }
+        .tab-active {
+            border-color: #2563eb; /* blue-600 */
+            color: #2563eb;
+            background-color: white;
+        }
+        .tab-inactive {
+            border-color: transparent;
+            color: #475569; /* slate-600 */
+        }
+        .flowchart-node {
+            transition: all 0.2s ease-in-out;
+        }
+        .flowchart-node:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .flowchart-line {
+            position: absolute;
+            background-color: #94a3b8; /* slate-400 */
+            z-index: 0;
+        }
+        .flowchart-arrow::after {
+            content: '▶';
+            position: absolute;
+            font-size: 12px;
+            color: #94a3b8; /* slate-400 */
+        }
+        .prose { max-width: 65ch; }
+        .prose h3 { margin-top: 1.25em; margin-bottom: 0.5em; }
+        .prose p { margin-top: 0.5em; margin-bottom: 0.5em; }
+        .prose ol > li::marker { font-weight: 600; }
+        .loader {
+            width: 24px;
+            height: 24px;
+            border: 3px solid #d1d5db;
+            border-bottom-color: #3b82f6;
+            border-radius: 50%;
+            display: inline-block;
+            box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+        }
+        @keyframes rotation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div id="app" class="container mx-auto p-4 md:p-8 max-w-7xl">
+        
+        <header class="text-center mb-10">
+            <h1 class="text-4xl md:text-5xl font-bold text-slate-800 mb-2">WhatsApp to Google Sheets Automation</h1>
+            <p class="text-lg text-slate-600">An AI-Enhanced Interactive Guide for Your Internship Project</p>
+        </header>
+
+        <main>
+            <div class="bg-white rounded-xl shadow-lg p-4 sm:p-6">
+                <nav class="flex flex-wrap border-b border-slate-200 mb-6">
+                    <button data-tab="overview" class="nav-tab text-sm sm:text-base font-medium py-3 px-3 sm:px-5 border-b-2 -mb-px">📝 Overview</button>
+                    <button data-tab="setup" class="nav-tab text-sm sm:text-base font-medium py-3 px-3 sm:px-5 border-b-2 -mb-px">🛠️ Setup</button>
+                    <button data-tab="implementation" class="nav-tab text-sm sm:text-base font-medium py-3 px-3 sm:px-5 border-b-2 -mb-px">⚙️ Implementation</button>
+                    <button data-tab="demo" class="nav-tab text-sm sm:text-base font-medium py-3 px-3 sm:px-5 border-b-2 -mb-px">🎬 Demo Guide</button>
+                    <button data-tab="simulation" class="nav-tab text-sm sm:text-base font-medium py-3 px-3 sm:px-5 border-b-2 -mb-px">🧪 Live Simulation</button>
+                    <button data-tab="projectplus" class="nav-tab text-sm sm:text-base font-medium py-3 px-3 sm:px-5 border-b-2 -mb-px">🚀 Project+ ✨</button>
+                </nav>
+
+                <div id="tab-content">
+                    <!-- Content will be injected by JavaScript -->
+                </div>
+            </div>
+        </main>
+        
+        <footer class="text-center mt-10 text-slate-500 text-sm">
+            <p>Designed as an interactive guide for the AI Agent Development Internship Task.</p>
+        </footer>
+    </div>
+
+    <!-- Modal for Implementation Details -->
+    <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4">
+        <div id="modal-content" class="bg-white rounded-lg shadow-2xl w-full max-w-2xl max-h-[80vh] overflow-y-auto p-8 relative">
+            <button id="modal-close" class="absolute top-4 right-4 text-slate-500 hover:text-slate-800 text-2xl">&times;</button>
+            <h3 id="modal-title" class="text-2xl font-bold mb-4 text-slate-800"></h3>
+            <div id="modal-body" class="prose max-w-none text-slate-700"></div>
+        </div>
+    </div>
+
+    <script>
+        const contentData = {
+            overview: {
+                title: 'Project Overview',
+                html: `
+                    <div class="animate-fade-in">
+                        <h2 class="text-2xl font-bold text-slate-800 mb-4">Understanding the Core Requirement</h2>
+                        <p class="mb-6 text-slate-600">At its heart, this is an event-driven automation. The goal is to create a robust and professional workflow where a user's WhatsApp message triggers a series of actions, ultimately logging their response in a Google Sheet. The logic is simple, clear, and demonstrates key integration skills.</p>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="bg-slate-50 rounded-lg p-6">
+                                <h3 class="font-bold text-lg mb-2">The Workflow Steps</h3>
+                                <ol class="list-decimal list-inside space-y-2 text-slate-600">
+                                    <li><span class="font-semibold">Trigger 1:</span> A user sends "hi" to a specific WhatsApp number.</li>
+                                    <li><span class="font-semibold">Action 1:</span> The system automatically replies with a predefined list of options (Marketing, Tech, Career Guidance).</li>
+                                    <li><span class="font-semibold">Trigger 2:</span> The user replies with one of those options.</li>
+                                    <li><span class="font-semibold">Action 2:</span> The system captures the user's phone number, their choice, and the timestamp, then records it in a Google Sheet.</li>
+                                </ol>
+                            </div>
+                            <div class="bg-slate-50 rounded-lg p-6">
+                                <h3 class="font-bold text-lg mb-2">The Technology Stack</h3>
+                                <p class="mb-4 text-slate-600">Your choice of the following tools is the perfect stack for this task—it's fast, reliable, and showcases your ability to integrate modern no-code platforms.</p>
+                                <div class="flex items-center space-x-4 mb-3">
+                                    <span class="text-2xl">📱</span>
+                                    <div><span class="font-semibold">Twilio Sandbox for WhatsApp:</span> Provides the WhatsApp API endpoint.</div>
+                                </div>
+                                <div class="flex items-center space-x-4 mb-3">
+                                    <span class="text-2xl">🔗</span>
+                                    <div><span class="font-semibold">Make.com:</span> The automation bridge that connects the services and contains the logic.</div>
+                                </div>
+                                <div class="flex items-center space-x-4">
+                                    <span class="text-2xl">📄</span>
+                                    <div><span class="font-semibold">Google Sheets:</span> Acts as the simple database for logging the data.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            setup: {
+                title: 'Tools & Setup Checklist',
+                html: `
+                    <div class="animate-fade-in">
+                        <h2 class="text-2xl font-bold text-slate-800 mb-4">Prerequisites Checklist</h2>
+                        <p class="mb-6 text-slate-600">Before you begin building the automation, ensure you have all the necessary accounts and assets ready to go. Click on an item to mark it as complete.</p>
+                        <ul id="checklist" class="space-y-4">
+                            <li class="checklist-item flex items-start p-4 bg-slate-50 rounded-lg cursor-pointer transition hover:bg-slate-100">
+                                <span class="checklist-icon mr-4 text-2xl text-slate-400">☐</span>
+                                <div>
+                                    <h3 class="font-bold text-lg">Twilio Account (Free Trial)</h3>
+                                    <p class="text-slate-600">Sign up and activate the WhatsApp Sandbox. Keep the dashboard open to easily access your <strong>Account SID</strong> and <strong>Auth Token</strong>.</p>
+                                </div>
+                            </li>
+                            <li class="checklist-item flex items-start p-4 bg-slate-50 rounded-lg cursor-pointer transition hover:bg-slate-100">
+                                <span class="checklist-icon mr-4 text-2xl text-slate-400">☐</span>
+                                <div>
+                                    <h3 class="font-bold text-lg">Google Account & Sheet</h3>
+                                    <p class="text-slate-600">Create a new Google Sheet named "WhatsApp Interest Log" with three columns: <code>Phone Number</code>, <code>Timestamp</code>, and <code>Selected Interest</code>.</p>
+                                </div>
+                            </li>
+                            <li class="checklist-item flex items-start p-4 bg-slate-50 rounded-lg cursor-pointer transition hover:bg-slate-100">
+                                <span class="checklist-icon mr-4 text-2xl text-slate-400">☐</span>
+                                <div>
+                                    <h3 class="font-bold text-lg">Make.com Account (Free)</h3>
+                                    <p class="text-slate-600">Sign up for a free account. The free tier is more than sufficient for this project.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                `
+            },
+            implementation: {
+                title: 'Building the Scenario in Make.com',
+                html: `
+                    <div class="animate-fade-in">
+                        <h2 class="text-2xl font-bold text-slate-800 mb-2">Interactive Workflow Diagram</h2>
+                        <p class="mb-8 text-slate-600">This diagram represents the scenario you will build in Make.com. Click on each node to see the detailed setup instructions for that step.</p>
+                        
+                        <div class="relative flex flex-col items-center p-4 md:p-8 min-h-[400px]">
+                            <!-- Start Node -->
+                            <div id="node-trigger" class="flowchart-node z-10 bg-white border-2 border-blue-500 rounded-lg p-4 w-60 text-center shadow-md cursor-pointer">
+                                <p class="font-semibold text-blue-700">1. Twilio Trigger</p>
+                                <p class="text-sm text-slate-600">Watch Incoming Messages</p>
+                            </div>
+
+                            <!-- Line to Router -->
+                            <div class="flowchart-line w-1 h-16 mt-0"></div>
+                            <div class="flowchart-arrow transform translate-y-16"></div>
+
+                            <!-- Router Node -->
+                            <div id="node-router" class="flowchart-node z-10 bg-white border-2 border-purple-500 rounded-full flex items-center justify-center h-24 w-24 text-center shadow-md cursor-pointer">
+                                <div>
+                                    <p class="font-semibold text-purple-700">2. Router</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Forked Lines -->
+                            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 mt-12 w-full h-24 z-0">
+                                <div class="absolute left-1/2 top-0 w-px h-8 bg-slate-400 -translate-x-1/2"></div>
+                                <div class="absolute left-1/2 top-8 w-1/2 h-px bg-slate-400 -translate-x-full"></div>
+                                <div class="absolute left-1/4 top-8 w-px h-8 bg-slate-400"></div>
+                                <div class="absolute right-1/2 top-8 w-1/2 h-px bg-slate-400"></div>
+                                <div class="absolute right-1/4 top-8 w-px h-8 bg-slate-400"></div>
+                                <div class="flowchart-arrow" style="left: 25%; top: 4.5rem; transform: translateX(-50%);"></div>
+                                <div class="flowchart-arrow" style="right: 25%; top: 4.5rem; transform: translateX(50%);"></div>
+                            </div>
+
+                            <!-- Two Paths -->
+                            <div class="absolute top-1/2 left-0 right-0 mt-32 flex justify-around w-full flex-col items-center space-y-4 md:flex-row md:space-y-0 md:items-start">
+                                <!-- Path 1: Reply -->
+                                <div id="node-reply" class="flowchart-node z-10 bg-white border-2 border-green-500 rounded-lg p-4 w-60 text-center shadow-md cursor-pointer">
+                                    <p class="font-semibold text-green-700">3a. Path 1: Reply to "hi"</p>
+                                    <p class="text-sm text-slate-600">Condition: Message is "hi"</p>
+                                    <p class="text-sm text-slate-600">Action: Send Options</p>
+                                </div>
+                                <!-- Path 2: Log -->
+                                <div id="node-log" class="flowchart-node z-10 bg-white border-2 border-orange-500 rounded-lg p-4 w-60 text-center shadow-md cursor-pointer">
+                                    <p class="font-semibold text-orange-700">3b. Path 2: Log Interest</p>
+                                    <p class="text-sm text-slate-600">Condition: Message is an option</p>
+                                    <p class="text-sm text-slate-600">Action: Add Row to Google Sheet</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            demo: {
+                title: 'Recording & Submitting the Demo',
+                html: `
+                    <div class="animate-fade-in">
+                        <h2 class="text-2xl font-bold text-slate-800 mb-4">Creating a Professional Demo Video (2-5 mins)</h2>
+                        <p class="mb-6 text-slate-600">Your video is your chance to shine. A clean, confident presentation makes a huge difference. Follow this structure for a professional result.</p>
+                        
+                        <div class="space-y-6">
+                            <div class="p-5 bg-slate-50 rounded-lg border border-slate-200">
+                                <h3 class="font-bold text-lg mb-2">1. Recommended Video Structure</h3>
+                                <div class="space-y-4 text-slate-600">
+                                    <p><strong>Introduction (15s):</strong> State your name and the purpose of the video.</p>
+                                    <p><strong>Workflow Overview (60-90s):</strong> Show your Make.com scenario and briefly explain each module and the logic of the router.</p>
+                                    <p><strong>Live Demonstration (60s):</strong> Switch to WhatsApp. Send "hi", receive the reply, and then send back one of the options.</p>
+                                    <p><strong>Verification (30s):</strong> Switch to the Google Sheet and highlight the new row that appeared instantly, pointing out each piece of data.</p>
+                                    <p><strong>Conclusion (10s):</strong> Thank the viewer for the opportunity.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="p-5 bg-white rounded-lg border border-slate-200 mt-6">
+                                <h3 class="font-bold text-lg mb-2 text-blue-600">✨ AI Demo Script Generator</h3>
+                                <p class="text-slate-600 mb-4">Stuck on what to say? Click the button below to generate a professional, natural-sounding script for your demo video based on the structure above.</p>
+                                <button id="generate-script-btn" class="inline-flex items-center gap-2 bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700 transition">
+                                    Generate Demo Script
+                                </button>
+                                <div id="script-output" class="mt-4 p-4 bg-slate-50 rounded-md text-slate-700 prose max-w-none hidden"></div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            simulation: {
+                title: 'Live Workflow Simulation',
+                html: `
+                    <div class="animate-fade-in">
+                        <h2 class="text-2xl font-bold text-slate-800 mb-4">Live Workflow Simulation</h2>
+                        <p class="mb-6 text-slate-600">This is a sandboxed simulation of the entire workflow. Use the buttons in the "WhatsApp" panel to see the "Google Sheet" update in real-time. Click "Reset" to start over.</p>
+                        
+                        <div class="grid md:grid-cols-2 gap-4 md:gap-8">
+                            <!-- WhatsApp Panel -->
+                            <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h3 class="font-bold text-lg">📱 WhatsApp</h3>
+                                    <button id="sim-reset" class="text-sm bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold py-1 px-3 rounded-md">Reset</button>
+                                </div>
+                                <div id="whatsapp-chat" class="h-80 bg-white rounded-md p-3 overflow-y-auto flex flex-col space-y-2">
+                                    <!-- Chat messages appear here -->
+                                </div>
+                                <div id="whatsapp-buttons" class="mt-4 grid grid-cols-1 gap-2">
+                                    <button id="sim-send-hi" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700 transition">Send "hi"</button>
+                                </div>
+                            </div>
+
+                            <!-- Google Sheets Panel -->
+                            <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                                <h3 class="font-bold text-lg mb-4">📄 Google Sheet: WhatsApp Interest Log</h3>
+                                <div class="overflow-x-auto">
+                                    <table id="google-sheet" class="w-full text-sm text-left">
+                                        <thead class="bg-slate-200">
+                                            <tr>
+                                                <th class="p-2 font-semibold">Phone Number</th>
+                                                <th class="p-2 font-semibold">Timestamp</th>
+                                                <th class="p-2 font-semibold">Selected Interest</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Rows appear here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            projectplus: {
+                title: 'Project+ ✨ AI-Powered Extensions',
+                html: `
+                     <div class="animate-fade-in">
+                        <h2 class="text-2xl font-bold text-slate-800 mb-4">🚀 Take Your Project to the Next Level</h2>
+                        <p class="mb-6 text-slate-600">The base project is a great start, but showing initiative to enhance it can make your submission stand out. Use the AI Brainstormer below to generate creative ideas for extending the project's functionality and business value.</p>
+                        
+                        <div class="p-5 bg-white rounded-lg border border-slate-200">
+                            <h3 class="font-bold text-lg mb-2 text-purple-600">✨ AI Project Brainstormer</h3>
+                            <p class="text-slate-600 mb-4">Click the button to get three creative, impressive project extensions that would catch a hiring manager's eye.</p>
+                            <button id="brainstorm-btn" class="inline-flex items-center gap-2 bg-purple-600 text-white font-bold py-2 px-4 rounded-md hover:bg-purple-700 transition">
+                                Brainstorm Project Extensions
+                            </button>
+                            <div id="brainstorm-output" class="mt-4 p-4 bg-slate-50 rounded-md text-slate-700 prose max-w-none hidden"></div>
+                        </div>
+                    </div>
+                `
+            }
+        };
+
+        const modalData = {
+            'node-trigger': {
+                title: 'Step 1: Twilio Trigger - Watch Incoming Messages',
+                body: `<p>This is the starting point of your automation. It listens for any new message sent to your Twilio Sandbox number.</p><ol class="list-decimal list-inside mt-4 space-y-2"><li>In your Make.com scenario, click the <strong>+</strong> button and search for <strong>Twilio</strong>.</li><li>Select the trigger module <strong>"Watch Incoming Messages"</strong>.</li><li>Click <strong>"Add"</strong> to create a new webhook connection.</li><li>Name the connection and enter the <strong>Account SID</strong> and <strong>Auth Token</strong> from your Twilio dashboard.</li><li>Make will generate a unique URL. Copy it.</li><li>In your Twilio Sandbox settings, paste this URL into the field labeled <strong>"When a message comes in"</strong> and save.</li></ol>`
+            },
+            'node-router': {
+                title: 'Step 2: Add a Router',
+                body: `<p>A user interacts with your service twice (first with "hi", then with an option). The router directs the workflow based on what the user sends.</p><p class="mt-4">It splits the scenario into multiple paths, and you will set a filter on each path to define when it should run.</p><ol class="list-decimal list-inside mt-4 space-y-2"><li>Click the plus sign (or the semi-circle) next to the Twilio module.</li><li>Search for and select the <strong>"Router"</strong> module.</li><li>This will automatically create two separate paths for you to configure.</li></ol>`
+            },
+            'node-reply': {
+                title: 'Step 3a: Configure the First Route (Replying to "hi")',
+                body: `<p>This path runs only when a new user initiates contact by sending "hi". Its job is to reply with the list of options.</p><h4 class="font-bold mt-4 mb-2">Filter Setup:</h4><ol class="list-decimal list-inside space-y-2"><li>Click the dotted line on the path to open the filter setup.</li><li><strong>Label:</strong> Give it a descriptive name like <code>Initial Contact: "hi"</code>.</li><li><strong>Condition:</strong> Map the <code>Text</code> element from the Twilio trigger. Use the "Text operators: Equal to (case insensitive)" condition and set the value to <code>hi</code>.</li></ol><h4 class="font-bold mt-4 mb-2">Twilio Module Setup:</h4><ol class="list-decimal list-inside space-y-2"><li>Add a <strong>Twilio -> "Send a Message"</strong> module to this path.</li><li><strong>To:</strong> Map the <code>From</code> element from the trigger (this sends the message back to the original user).</li><li><strong>Text:</strong> Type the reply message: <code>Hello! Please choose your primary interest by replying with one word: Marketing, Tech, or Career Guidance.</code></li></ol>`
+            },
+            'node-log': {
+                title: 'Step 3b: Configure the Second Route (Logging the Choice)',
+                body: `<p>This path runs when the user replies with one of the three options. Its job is to log the data in Google Sheets.</p><h4 class="font-bold mt-4 mb-2">Filter Setup:</h4><ol class="list-decimal list-inside space-y-2"><li>Click the dotted line on the second path to open the filter setup.</li><li><strong>Label:</strong> <code>Log User Interest</code>.</li><li><strong>Condition:</strong> Set up three rules with the "OR" operator. The <code>Text</code> from the trigger must be "Equal to" <code>Marketing</code> OR <code>Tech</code> OR <code>Career Guidance</code>.</li></ol><h4 class="font-bold mt-4 mb-2">Google Sheets Module Setup:</h4><ol class="list-decimal list-inside space-y-2"><li>Add a <strong>Google Sheets -> "Add a Row"</strong> module to this path.</li><li>Connect your Google Account and select your "WhatsApp Interest Log" spreadsheet and sheet.</li><li><strong>Map the values:</strong><ul class="list-disc list-inside ml-6 mt-1"><li><code>Phone Number</code>: Map the <code>From</code> element from the trigger.</li><li><code>Timestamp</code>: Use the <code>now</code> variable from the Date and Time functions.</li><li><code>Selected Interest</code>: Map the <code>Text</code> element from the trigger.</li></ul></li><li>(Optional but recommended) Add another Twilio "Send a Message" module to confirm the submission.</li></ol>`
+            }
+        };
+
+        const app = {
+            activeTab: 'overview',
+            
+            init() {
+                this.setupTabs();
+                this.renderContent();
+            },
+
+            setupTabs() {
+                document.querySelectorAll('.nav-tab').forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        this.activeTab = tab.dataset.tab;
+                        this.renderContent();
+                    });
+                });
+            },
+            
+            async callGeminiAPI(prompt) {
+                const apiKey = ""; 
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+                
+                const payload = {
+                    contents: [{ role: "user", parts: [{ text: prompt }] }]
+                };
+
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`API call failed with status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    
+                    if (result.candidates && result.candidates.length > 0 && result.candidates[0].content.parts.length > 0) {
+                        return result.candidates[0].content.parts[0].text;
+                    } else {
+                        throw new Error('Invalid response structure from API.');
+                    }
+                } catch (error) {
+                    console.error("Gemini API call error:", error);
+                    return "Sorry, there was an error generating the content. Please check the console for details.";
+                }
+            },
+
+            renderContent() {
+                document.querySelectorAll('.nav-tab').forEach(tab => {
+                    tab.classList.toggle('tab-active', tab.dataset.tab === this.activeTab);
+                    tab.classList.toggle('tab-inactive', tab.dataset.tab !== this.activeTab);
+                });
+
+                const contentContainer = document.getElementById('tab-content');
+                contentContainer.innerHTML = contentData[this.activeTab].html;
+                
+                if (this.activeTab === 'setup') this.setupChecklist();
+                if (this.activeTab === 'implementation') this.setupImplementation();
+                if (this.activeTab === 'simulation') this.setupSimulation();
+                if (this.activeTab === 'demo') this.setupDemoGuide();
+                if (this.activeTab === 'projectplus') this.setupProjectPlus();
+            },
+
+            setupChecklist() {
+                document.querySelectorAll('.checklist-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        const icon = item.querySelector('.checklist-icon');
+                        const isChecked = icon.textContent === '☑';
+                        icon.textContent = isChecked ? '☐' : '☑';
+                        icon.classList.toggle('text-blue-600', !isChecked);
+                        icon.classList.toggle('text-slate-400', isChecked);
+                    });
+                });
+            },
+
+            setupImplementation() {
+                const modal = document.getElementById('modal');
+                const modalClose = document.getElementById('modal-close');
+                const modalTitle = document.getElementById('modal-title');
+                const modalBody = document.getElementById('modal-body');
+
+                const openModal = (nodeId) => {
+                    const data = modalData[nodeId];
+                    if (!data) return;
+                    modalTitle.textContent = data.title;
+                    modalBody.innerHTML = data.body;
+                    modal.classList.remove('hidden');
+                    modal.classList.add('flex');
+                };
+
+                const closeModal = () => {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                };
+
+                document.querySelectorAll('.flowchart-node').forEach(node => {
+                    node.addEventListener('click', () => openModal(node.id));
+                });
+                
+                modalClose.addEventListener('click', closeModal);
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) closeModal();
+                });
+            },
+            
+            setupDemoGuide() {
+                const generateBtn = document.getElementById('generate-script-btn');
+                const outputDiv = document.getElementById('script-output');
+                
+                generateBtn.addEventListener('click', async () => {
+                    generateBtn.disabled = true;
+                    outputDiv.classList.remove('hidden');
+                    outputDiv.innerHTML = '<div class="flex items-center gap-2"><div class="loader"></div><span>Generating script... Please wait.</span></div>';
+
+                    const prompt = `
+                        You are a helpful assistant for a tech intern. Your task is to generate a professional and concise script for a 2-3 minute video demonstration.
+                        The intern has built a WhatsApp-to-Google-Sheets automation using Twilio and Make.com.
+                        Here is the required structure and key points for the video:
+                        1.  **Introduction (15s):** State your name and the purpose of the video.
+                        2.  **Workflow Overview (60-90s):** Show the Make.com scenario. Explain the Twilio trigger, the router, and the two paths for replying and logging data to Google Sheets.
+                        3.  **Live Demonstration (60s):** Show a phone screen. Send "hi" to the WhatsApp number, receive the options, and reply with one option.
+                        4.  **Verification (30s):** Switch to the Google Sheet and show the new row that was added instantly. Point out the phone number, timestamp, and selected interest.
+                        5.  **Conclusion (10s):** A brief closing statement.
+
+                        Please weave these points into a natural, flowing script. The tone should be confident and clear. Start with "Hello, this is..." and end with "This concludes my demonstration. Thank you.". Format the output nicely using paragraphs.
+                    `;
+                    
+                    const script = await this.callGeminiAPI(prompt);
+                    outputDiv.innerHTML = script.replace(/\n/g, '<br>');
+                    generateBtn.disabled = false;
+                });
+            },
+            
+            setupProjectPlus() {
+                const brainstormBtn = document.getElementById('brainstorm-btn');
+                const outputDiv = document.getElementById('brainstorm-output');
+                
+                brainstormBtn.addEventListener('click', async () => {
+                    brainstormBtn.disabled = true;
+                    outputDiv.classList.remove('hidden');
+                    outputDiv.innerHTML = '<div class="flex items-center gap-2"><div class="loader"></div><span>Brainstorming ideas... Please wait.</span></div>';
+
+                    const prompt = `
+                        You are an AI innovation consultant. An intern has built a basic WhatsApp-to-Google-Sheets automation where a user selects an interest (Marketing, Tech, or Career Guidance) and it gets logged.
+                        Suggest 3 creative and impressive extensions to this project that would impress a hiring manager.
+                        For each suggestion, briefly describe:
+                        1.  The new workflow.
+                        2.  The tools required (e.g., adding another API or service).
+                        3.  The value it adds to a business.
+                        Format the response as a numbered list with clear headings for each suggestion.
+                    `;
+                    
+                    const ideas = await this.callGeminiAPI(prompt);
+                    outputDiv.innerHTML = ideas.replace(/\n/g, '<br>');
+                    brainstormBtn.disabled = false;
+                });
+            },
+
+            setupSimulation() {
+                const chatBox = document.getElementById('whatsapp-chat');
+                const sheetBody = document.querySelector('#google-sheet tbody');
+                const buttonsContainer = document.getElementById('whatsapp-buttons');
+                const resetBtn = document.getElementById('sim-reset');
+                let simState = 'initial';
+
+                const addChatMessage = (message, sender = 'user') => {
+                    const msgDiv = document.createElement('div');
+                    msgDiv.textContent = message;
+                    msgDiv.className = sender === 'user' 
+                        ? 'bg-blue-100 text-slate-800 p-2 rounded-lg self-end max-w-[80%]' 
+                        : 'bg-slate-200 text-slate-800 p-2 rounded-lg self-start max-w-[80%]';
+                    chatBox.appendChild(msgDiv);
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                };
+
+                const addSheetRow = (interest) => {
+                    const row = document.createElement('tr');
+                    row.className = 'bg-white border-b';
+                    const timestamp = new Date();
+                    row.innerHTML = `
+                        <td class="p-2">whatsapp:+141...</td>
+                        <td class="p-2">${timestamp.toLocaleString()}</td>
+                        <td class="p-2 font-medium text-green-700">${interest}</td>
+                    `;
+                    sheetBody.appendChild(row);
+                };
+
+                const showOptions = () => {
+                    buttonsContainer.innerHTML = `
+                        <button class="sim-option-btn w-full bg-slate-600 text-white font-bold py-2 px-4 rounded-md hover:bg-slate-700 transition" data-option="Marketing">Send "Marketing"</button>
+                        <button class="sim-option-btn w-full bg-slate-600 text-white font-bold py-2 px-4 rounded-md hover:bg-slate-700 transition" data-option="Tech">Send "Tech"</button>
+                        <button class="sim-option-btn w-full bg-slate-600 text-white font-bold py-2 px-4 rounded-md hover:bg-slate-700 transition" data-option="Career Guidance">Send "Career Guidance"</button>
+                    `;
+                    document.querySelectorAll('.sim-option-btn').forEach(btn => {
+                        btn.addEventListener('click', handleOptionClick);
+                    });
+                };
+                
+                const handleHiClick = () => {
+                    if (simState !== 'initial') return;
+                    addChatMessage('hi', 'user');
+                    simState = 'options_sent';
+                    const sendHiBtn = document.getElementById('sim-send-hi');
+                    if(sendHiBtn) {
+                        sendHiBtn.disabled = true;
+                        sendHiBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                    }
+                    setTimeout(() => {
+                        addChatMessage('Hello! Please choose your primary interest by replying with one word: Marketing, Tech, or Career Guidance.', 'system');
+                        showOptions();
+                    }, 1000);
+                };
+
+                const handleOptionClick = (e) => {
+                    if (simState !== 'options_sent') return;
+                    const option = e.target.dataset.option;
+                    addChatMessage(option, 'user');
+                    simState = 'done';
+                    buttonsContainer.innerHTML = '';
+                    setTimeout(() => {
+                        addChatMessage('Thank you! Your interest has been successfully logged.', 'system');
+                        addSheetRow(option);
+                    }, 1000);
+                };
+
+                const resetSimulation = () => {
+                    simState = 'initial';
+                    chatBox.innerHTML = '';
+                    sheetBody.innerHTML = '';
+                    buttonsContainer.innerHTML = `<button id="sim-send-hi" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700 transition">Send "hi"</button>`;
+                    document.getElementById('sim-send-hi').addEventListener('click', handleHiClick);
+                };
+                
+                const sendHiBtn = document.getElementById('sim-send-hi');
+                if (sendHiBtn) sendHiBtn.addEventListener('click', handleHiClick);
+                resetBtn.addEventListener('click', resetSimulation);
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            app.init();
+        });
+    </script>
+</body>
+</html>
